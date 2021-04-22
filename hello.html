@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <title>Hello|Learn JavaScript</title>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <p>
+      Hello, Learn JavaScript.
+    </p>
+    <div id="test-promise-log">
+      
+    </p>
+    <script>
+      'use strict';
+      new Promise(function () {});
+      console.log('支持Promise!');
+      //alert('我要学JavaScript!');
+      
+      function test(resolve, reject) {
+        console.log('start new Promise...');
+        
+        var timeOut = Math.random() * 2;
+        console.log('set timeout to: ' + timeOut + ' seconds.');
+        setTimeout(function () {
+            if (timeOut < 1) {
+                console.log('call resolve()...');
+                resolve('200 OK');
+            }
+            else {
+                console.log('call reject()...');
+                reject('timeout in ' + timeOut + ' seconds.');
+            }
+        }, timeOut * 10);
+      }
+
+      new Promise(test).then(function (result) {
+        console.log('成功：' + result);
+      }).catch(function (reason) {
+        console.log('失败：' + reason);
+      });
+      
+      // 清除log:
+      var logging = document.getElementById('test-promise-log');
+      while (logging.children.length > 1) {
+          logging.removeChild(logging.children[logging.children.length - 1]);
+      }
+
+      // 输出log到页面:
+      function log(s) {
+          var p = document.createElement('p');
+          p.innerHTML = s;
+          logging.appendChild(p);
+      }
+      
+      new Promise(function (resolve, reject) {
+        log('start new Promise...');
+        var timeOut = Math.random() * 2;
+        log('set timeout to: ' + timeOut + ' seconds.');
+        setTimeout(function () {
+            if (timeOut < 1) {
+                log('call resolve()...');
+                resolve('200 OK');
+            }
+            else {
+                log('call reject()...');
+                reject('timeout in ' + timeOut + ' seconds.');
+            }
+        }, timeOut * 1000);
+    }).then(function (r) {
+        log('Done: ' + r);
+    }).catch(function (reason) {
+        log('Failed: ' + reason);
+    });
+    </script>
+  </body>
+</html>
