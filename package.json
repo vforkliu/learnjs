@@ -9,5 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@babel/core": "^7.26.0",
+    "isolated-vm": "^5.0.3"
+  }
 }
