@@ -1,0 +1,88 @@
+// const CryptoJS = import('crypto-js');
+import CryptoJS from 'crypto-js';
+
+// 加密
+function encryptAES(plainText, key, iv) {
+  return CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+    iv: CryptoJS.enc.Utf8.parse(iv)
+  }).toString();
+}
+
+// 解密
+function decryptAES(encryptedText, key, iv) {
+  const bytes = CryptoJS.AES.decrypt(encryptedText, CryptoJS.enc.Utf8.parse(key), {
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+    iv: CryptoJS.enc.Utf8.parse(iv)
+  });
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
+
+function d(a, b) {
+  b = CryptoJS.MD5(b).toString();
+  console.log("md5:", b);
+  var d = CryptoJS.enc.Utf8.parse(b.substring(0, 16));
+  var e = CryptoJS.enc.Utf8.parse(b.substring(16));
+
+  console.log("key:", e.toString(CryptoJS.enc.Utf8));
+  console.log("iv:", d.toString(CryptoJS.enc.Utf8));
+  let decData = CryptoJS.AES.decrypt(
+    a, 
+    e, 
+    { 
+      mode: CryptoJS.mode.CBC,
+      iv: d, 
+      padding: CryptoJS.pad.Pkcs7 
+    }
+  )
+  let r = decData.toString(CryptoJS.enc.Utf8)
+  return r
+}
+
+function e(a, b) {
+  b = CryptoJS.MD5(b).toString();
+  console.log("md5:", b);
+  var d = CryptoJS.enc.Utf8.parse(b.substring(0, 16));
+  var e = CryptoJS.enc.Utf8.parse(b.substring(16));
+
+  console.log("key:", e.toString(CryptoJS.enc.Utf8));
+  console.log("iv:", d.toString(CryptoJS.enc.Utf8));
+  let decData = CryptoJS.AES.encrypt(
+    a, 
+    e, 
+    { 
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7 ,
+      iv: d, 
+    }
+  )
+  // console.log("加密:", decData);
+  let r = decData.toString()
+  // console.log("base64:", decData.toString(CryptoJS.enc.Base64));
+  return r
+  // return encryptAES(a,e,d);
+}
+
+// 示例
+const key = "0123456789abcdef"; // 16 字节密钥
+const iv = "abcdef9876543210";  // 16 字节 IV
+const encrypted = encryptAES("Hello, AES!", key, iv);
+console.log("加密:", encrypted);
+
+const decrypted = decryptAES(encrypted, key, iv);
+console.log("解密:", decrypted);
+
+const originText = "NeaooTAZzjA5fMpXD2SDwDvxYpeX7WyfxW4E7voPZkwFZm1v5qdDlvmB2yKVmKWizDhGob1CdU1xuDysAek1lpY1g9wvBCrcR3p5G0cCe2rn72gR24WoOxEFaaJyNGfgSHFxlIJGpapdBpMXV2eV5g3GvvFEQhhwmtWIqiHyt85kpXFyiOcBTpNeFm\/1BV+8yHmIDXGBc15S2IrxoO6r\/47emoWhpEbw+nZrWAo\/vhTC4qsgBPRq\/WT\/flecZx\/DJrbsj0FBUXhK6ElleVRSwOii4K4EEa6lfNUmQyeAzCfrnUQ4CG3kasyTe8rehxlwRrg3B7wns7oq+4Llb1vmLZmrUigR58+a78QuxhRAwjYH7Hr04wS2Q1o9PbR07DwKWdnDY+BiyvVSnvy1ukITee0FRXtEskE7Prj42lRJ4kGpXdSS3XUHU24R+ddnDPNc4IPBEqQBa6rNjjvp4Studqv82z2L7fDWAn8hyyrq4jzSZ3JQ3np6viuSKxTd21eqKCDKGCpeZ29jiRxDaYIgMcUZY8pMfA1vTgN+MOoZrUszUWz7EqXj6h+0L6v4Vtith\/iJvcf3F4M6GCGHYwKvSK\/4OvrZf09aWRnbFkWkSxnoDkf029KXbw7h\/A2iqeuMDq658w9L9+BX+8C36c2ceR+DwKTkQTU+\/aQmu61cBgWKAQfCb6gbvGpqIM3cLdXzBfi73ipkgS0xiVKBaXOuo5a6NXOORwM4PObmsyxWAx7\/KmHkk3EjCQ2nwG9VGmFwiJfEcJvqf0XB\/lN+vzE4KVHD9nE\/pIsgnSDSE9lQaxvBRj4qL4VPYb9XqWGCWwT9zdVpMguA8UBaQ35vVzKrTJoBgQx34HmN\/+2oogmCoHcenwIwRlqxJcKha17pCzYJPRtKTSguTLTOpo9Kpw9cUMdN4FWzteLVMI+DaOkJeCiqjtm9SXQ4ON02ItQGOZIB+fYSt0sNy04SZr882DmIy35eUONvftn4mXlaEjltIGtcrUpBozP7ko1vS2sXPB3LpgU5EZIDYGQ7ZdwdEgO5XsYprmLEtRY+oAj53vK202zL7QgzXSJk5vWiddsyNnPWtd2X554f0yULma+MgraAl5nEHyrIpL5ssLm228n9EBmj3T6bcuQgSeU\/BENMt1Qc0A4WkJ0IFz8JFjyR+TRN\/CEx8SwbJdLVZaAz5iTQ4dm7YYeoeNtx2Lrdb7pMvuG+hW+yZ6IcwfHsRBNpshtGvcdwUEofO35xjRrtBvGOCgLUsy7AKskzY4vfSGkWo0dSGzCDTFhzqc68lkI5ZtsjP562lJn+iXAcmviqDypxuEhDQD0vCovE8F1LJKmih42CJe\/qN9CsPlva76BFsrk4IlttG8kOBvHHGBReljJ29H62YTkSNUXZS\/qDjiwHuESDc+\/UwG5RqeLtLiZI7vIygSAQm1KWhGHe\/zWvN\/dp9gx2sJKmtKKXOaFYEDzkeeeBrs6UZoHAaWEeBtjuoo49MOmK4S82SuT8hVCeAvsLEgRt7MpYzyoaGX5xn8eBGhFX7NU3JeBx5LU+IwI0yVh8FywuMQXri2WWp+lLXu8FWRNN6QWsrxjQGt6kZefPK+Ys7P7ubJYRvCoW\/OPLNViDvJoAnShqNAMLIueIWBrqZsqXMC2Gip0KtR6uPeN+45DVf7oyW9qogwl0Ia4qilaZEkylazQ\/xAdJ7EH42nj1GkE2rBmazdKwtS\/KcAoUIZhPCQS8WjHSwEkhUtWh1a0rSfFVjDQQ8jTQCsOsX88EPZtcRjSdZA8AOCmKkegQWR9Gjp8PzY3QDJbw3OKxi82sE7MVZzZOge80kYovHyA+q04xjyd1YVobEspViCTP+xNCt9vLZZlR0DpTrMgdItMRGxDKXVLLyek5V\/cOM1zkaJx7rDkRarxTUYkNO4oLNUiNqE8JLZr9OPYFD80\/Co4IcF8Fhdknx1\/xuvnfOrEN8ekZdh1UYXz8kXoppkNKqagels\/ouTuHjO3Gst4xh1hx8IpSHB9s1qHeR8fXJCexA7\/kvCe66iATHFrZHqW33ZDNLqiqGJ0p85L4CtCns\/ISk72MDCkpZh6sqYp5BSGEjBqFJ228zzgh9DHRcoFOPVssJzJ\/UI268TnGZNGD0afy3VONtctKkZZnGeD\/hna4zmXgR4bNGKx3Yxk1N3yZ9TNlb\/Xi1BPRvHWMeRH0B0kQuQ9lT0GfmK75vuSa2tmNeqmDDh7vTh9FJ3qF8prbSuLbqQ\/gC9i04b9gjpt2Cci6DnfbH8XriuM9G53hNNPsBfKp17qewiYuyG1BuoNesdOg66g8vq9wK\/6w9SfuRZoyehKg+Fs\/yFl\/7Rxmwi6ROqzmWJz7HkDTA4pS9lGYO\/Oc6gGc7HTnf6JDT+aaNW1ti\/CgySZQ\/QvvQ6xyEgMqxI+PaGwN8EYVWclXyVQQwj1rs5u8dBdfUEyYmCSmXKhKf46zO97luZLuiBQaou12zjEqOWkXHRhMu\/9izDdyKvkvS1AOR7XCuzdKcylWPqPJB47zndqK4mSo1BZ1a62AbkBO0FWFD8uCWXKmpTp\/ISfyhxYh+mej80D7oSKiXXDu\/JNdyURX+brFkVXvQwhEccu+BMxlVSICANcdtPaC5o6L9vuICvrr1xIoJr99WLq0MVNNPmiEImFKM0dYDKeq0NySgtPUZyRPm78xNy2s7qbD45J1LJ8TxnJQV9Z0+9HWNJel4+20TQBJXoSnLjJ44GjZWN75H3aLeIMH4Ce4OFsZzfiNYim7VfapdUtXN1j+JAmigkVWTUCjxLXG7yhYNQrSzvzQTDgy\/UzZK9UxaYy93Nw5vPnFOAj7Vcus1SEhg0d8sS87kXnqxQYyLDDMvDNCX83KIIphKKwCOgH1bQ9FaO9VWKI7UI+ks2A\/8G1r0thPenp+0WDxXMfo372IRK88wXe0SMzIAkjDlzGfyHLvkerAe1Me13oseb2ocytB+qxQRci3Mab4UQcwMu4JBqf73atePRFU7b3wMX8TBa8hveiU4xbv5Rew0N8ikQJH4a\/+XN5ibhJ84g2MzEk7\/aF6uAZcXkQBErTwrhgU+mrq7czquZr74tiO5Smr3yK6WFqKl4uJCVbUSVMJYyflhaIzrZRMn+T9yKb2qHbHjxyR7fVsnuaBmqREhNgJYXjsq0tLmnkXF3L9awP23j07\/S4+jjKnLOpkED\/DHI5awlpZ72Ku5qrVOANIv8hhiPng5AXpLwRLjs9OjO68Ovr9hRoq+8\/I8MGMPnhHwAW+MnPCl25clbG7AijdA5tdta1L9YBKSxarvn7U8AdVDg4Mx8YM2Ff9Jh6\/MCfLh4Y2LdPS0BfJ6j1M3b9z6+VxPUfhwh4NaL46pRG6lABzQx29gGwgbP37le9UjBbP9Esb4iAsS6xMwtUXNQHUWelBQpVI2GVCK4hxhRvbI907VOhlz0PN5SYCO+\/eq6VlgCR5PLVgSJfzd3Tsd2dS9adjlYhRcSySpTCTGKRQZgMVgcTxayCgf4Qgl6WH2J4ythwuYr+tCUttOq6i5IdCtOZn3Vqp0ehXf9yE8CSCYdqjMwxvrUmbtglyWOhhCEboTb\/wAnV06rC6ePLASHd3sv7hLoooLrnI47U15rD+vx7+4ttnG9LtHEGzluyXMjZVZx+TbfPbX2QKOSxOU8c3PG6lPVV4sukAMgMQkkjpY8Nm0\/TeCjM5IBXqcmthfuaYvUf+LJuPm\/5hjNkYNjjMIWKfUKX9tICwp2UmUkijAaIgSo\/MTkWT3iJWXajQAT8KbstYrkiB0E18+k5KzztmlDIBsrSADJjXpCtQHgJj7+Si185AOqSqsQ\/pNKPXDdKBXW9crpkL3vgSoACcNWJUc\/AgvAN6xcyZIxEkBt7OPW1wT55nc650OcL+sPo1mr4Mrwtrvw3sSGTjXBOsGewrzFAaMaxLqKRaTa6ou2KHXWtEuMjYjf4KwprNiF+NqN4ehMfNDXujRLyEsBiDGCXllr+iBO4Sj2ktPgkzhxPnUs6rcHZ7WqR32EacQLtBU2l9oRLY0WkXZfCQ97YvOQao3vtzrTmuKj7B+78PKpIbc5Uro8DV7kkWNCZXWoUMVZWkH7b+UC08bi4WV3VNaixXbP\/KP0Wczo9z\/gQfOLqvnH7AcyaEuB9thnjP8Xp4R8BenWxRH5cp2Ik2+ClHSXNXjw1MoDqSckD7no\/uCJA6BykniTWli2P02Z7rxfON7GwgYdZgXz2W3a7ZK5qEWk7T8qJRo86OEtnmJozcFGS9X3FVwHvcNTg9yMtkspXncgbqXU1Ih9JkGPj\/32Ewg5xVTklxPTSntVJ8u6mTOpo4ak20VXZboK\/t\/wt+tonfJYYa3kWnMEaDqL9BwFOetTQ0MGrioXR+WGPt6z1U7hkj5725M9u8DKqTvyiUHLmRjOufXE5IPwfkWHo57i4i3q4MF2o7ikVuAIay458\/Kl3H5ogMLjIrWc4lq0Z5sM8a4zfLjr45M+jS0uEKa5hof\/EmBQ+N7oleHHD0V21R8CXMXXpHDSNyGSqc+I66GKeCxKRqGmWRVKJ82ru2J+rADkwbAEIcFC7A0rkrMqZrsdfz5t\/C7zqC3hlrA7NVJqk6nfbify9Ql1ai5sy6UpbT8BsmhI+bJ75PjghRv1jokSptLBk68nTdnZi8iVDVHQn\/h1lJobM3trFT5cmK0rafD3y4GzOEtbr6BrpbMRAixdijDmPZURHf5u+dAvuM6vBgZsBWuaoU8\/KKUECUdIJAuF6GANdBH7eZAEQnWgrWvmqNerR\/liEqIptppDAAT+7bA2X6a4OgnCsAVDgc1n3v9uDjv66IMtvLvwog5PAbXJNsK+hnDEvBioJ08eHfSLffYJAQEzxjeS3rcUSpHVViVGyqKawxW6LA0LB0Ru9Oq282XNvl+WeT\/0xMF42BT3NLID7sa\/LHpKzg\/JkZCNiUb3UyPT0FdzQN1G+FNxISFveV1DpMrLLV4WKe0tPjcME\/71dLqc0e5V01SDPusEX7Qm10EOU\/2x4JgElCbg\/KsVNWS5qJUAKwM5QCtI\/BM+6tx3jA4LPmQBCMjbiksM1BQGuHI0wrTCmmaClxZ10eHqTAwIIDIPRNULcM0GbdaIDLkcycjGDTnKXjpws+vVcXDyGFIORgUBd3Q3P9f2S26P7aVNg2KjijXA\/6Pemb3zfRTK4JN+iTguwvBUerBgiZv9OMUk\/7LTp81KLPFJRMRimkAB3JML5JnUPc0V05dT3O9LHiwTfMTQg4WOfHno\/MDakQzfZiivnC7TnPMLjGax0acCjHGQ3a7Bcy3gImfRr3elrfPFijpTwRXMt0oHziLjcipyE5i3LaP9cvjofcSjRvGyAkJHbWtVWKd\/Cz6UjwIKHIDBiIl44JL\/+UOA0e2GqAAXj4VEep4yiXGhUNSxqrJ\/sQA45Ykk1dlW2ml841jV\/m8avL8hl3ui5k5mtwXD\/FBZEpwa6INVGkOqz14ZOzwkyVYabe62I=";
+let decContent = d("NeaooTAZzjA5fMpXD2SDwDvxYpeX7WyfxW4E7voPZkwFZm1v5qdDlvmB2yKVmKWizDhGob1CdU1xuDysAek1lpY1g9wvBCrcR3p5G0cCe2rn72gR24WoOxEFaaJyNGfgSHFxlIJGpapdBpMXV2eV5g3GvvFEQhhwmtWIqiHyt85kpXFyiOcBTpNeFm\/1BV+8yHmIDXGBc15S2IrxoO6r\/47emoWhpEbw+nZrWAo\/vhTC4qsgBPRq\/WT\/flecZx\/DJrbsj0FBUXhK6ElleVRSwOii4K4EEa6lfNUmQyeAzCfrnUQ4CG3kasyTe8rehxlwRrg3B7wns7oq+4Llb1vmLZmrUigR58+a78QuxhRAwjYH7Hr04wS2Q1o9PbR07DwKWdnDY+BiyvVSnvy1ukITee0FRXtEskE7Prj42lRJ4kGpXdSS3XUHU24R+ddnDPNc4IPBEqQBa6rNjjvp4Studqv82z2L7fDWAn8hyyrq4jzSZ3JQ3np6viuSKxTd21eqKCDKGCpeZ29jiRxDaYIgMcUZY8pMfA1vTgN+MOoZrUszUWz7EqXj6h+0L6v4Vtith\/iJvcf3F4M6GCGHYwKvSK\/4OvrZf09aWRnbFkWkSxnoDkf029KXbw7h\/A2iqeuMDq658w9L9+BX+8C36c2ceR+DwKTkQTU+\/aQmu61cBgWKAQfCb6gbvGpqIM3cLdXzBfi73ipkgS0xiVKBaXOuo5a6NXOORwM4PObmsyxWAx7\/KmHkk3EjCQ2nwG9VGmFwiJfEcJvqf0XB\/lN+vzE4KVHD9nE\/pIsgnSDSE9lQaxvBRj4qL4VPYb9XqWGCWwT9zdVpMguA8UBaQ35vVzKrTJoBgQx34HmN\/+2oogmCoHcenwIwRlqxJcKha17pCzYJPRtKTSguTLTOpo9Kpw9cUMdN4FWzteLVMI+DaOkJeCiqjtm9SXQ4ON02ItQGOZIB+fYSt0sNy04SZr882DmIy35eUONvftn4mXlaEjltIGtcrUpBozP7ko1vS2sXPB3LpgU5EZIDYGQ7ZdwdEgO5XsYprmLEtRY+oAj53vK202zL7QgzXSJk5vWiddsyNnPWtd2X554f0yULma+MgraAl5nEHyrIpL5ssLm228n9EBmj3T6bcuQgSeU\/BENMt1Qc0A4WkJ0IFz8JFjyR+TRN\/CEx8SwbJdLVZaAz5iTQ4dm7YYeoeNtx2Lrdb7pMvuG+hW+yZ6IcwfHsRBNpshtGvcdwUEofO35xjRrtBvGOCgLUsy7AKskzY4vfSGkWo0dSGzCDTFhzqc68lkI5ZtsjP562lJn+iXAcmviqDypxuEhDQD0vCovE8F1LJKmih42CJe\/qN9CsPlva76BFsrk4IlttG8kOBvHHGBReljJ29H62YTkSNUXZS\/qDjiwHuESDc+\/UwG5RqeLtLiZI7vIygSAQm1KWhGHe\/zWvN\/dp9gx2sJKmtKKXOaFYEDzkeeeBrs6UZoHAaWEeBtjuoo49MOmK4S82SuT8hVCeAvsLEgRt7MpYzyoaGX5xn8eBGhFX7NU3JeBx5LU+IwI0yVh8FywuMQXri2WWp+lLXu8FWRNN6QWsrxjQGt6kZefPK+Ys7P7ubJYRvCoW\/OPLNViDvJoAnShqNAMLIueIWBrqZsqXMC2Gip0KtR6uPeN+45DVf7oyW9qogwl0Ia4qilaZEkylazQ\/xAdJ7EH42nj1GkE2rBmazdKwtS\/KcAoUIZhPCQS8WjHSwEkhUtWh1a0rSfFVjDQQ8jTQCsOsX88EPZtcRjSdZA8AOCmKkegQWR9Gjp8PzY3QDJbw3OKxi82sE7MVZzZOge80kYovHyA+q04xjyd1YVobEspViCTP+xNCt9vLZZlR0DpTrMgdItMRGxDKXVLLyek5V\/cOM1zkaJx7rDkRarxTUYkNO4oLNUiNqE8JLZr9OPYFD80\/Co4IcF8Fhdknx1\/xuvnfOrEN8ekZdh1UYXz8kXoppkNKqagels\/ouTuHjO3Gst4xh1hx8IpSHB9s1qHeR8fXJCexA7\/kvCe66iATHFrZHqW33ZDNLqiqGJ0p85L4CtCns\/ISk72MDCkpZh6sqYp5BSGEjBqFJ228zzgh9DHRcoFOPVssJzJ\/UI268TnGZNGD0afy3VONtctKkZZnGeD\/hna4zmXgR4bNGKx3Yxk1N3yZ9TNlb\/Xi1BPRvHWMeRH0B0kQuQ9lT0GfmK75vuSa2tmNeqmDDh7vTh9FJ3qF8prbSuLbqQ\/gC9i04b9gjpt2Cci6DnfbH8XriuM9G53hNNPsBfKp17qewiYuyG1BuoNesdOg66g8vq9wK\/6w9SfuRZoyehKg+Fs\/yFl\/7Rxmwi6ROqzmWJz7HkDTA4pS9lGYO\/Oc6gGc7HTnf6JDT+aaNW1ti\/CgySZQ\/QvvQ6xyEgMqxI+PaGwN8EYVWclXyVQQwj1rs5u8dBdfUEyYmCSmXKhKf46zO97luZLuiBQaou12zjEqOWkXHRhMu\/9izDdyKvkvS1AOR7XCuzdKcylWPqPJB47zndqK4mSo1BZ1a62AbkBO0FWFD8uCWXKmpTp\/ISfyhxYh+mej80D7oSKiXXDu\/JNdyURX+brFkVXvQwhEccu+BMxlVSICANcdtPaC5o6L9vuICvrr1xIoJr99WLq0MVNNPmiEImFKM0dYDKeq0NySgtPUZyRPm78xNy2s7qbD45J1LJ8TxnJQV9Z0+9HWNJel4+20TQBJXoSnLjJ44GjZWN75H3aLeIMH4Ce4OFsZzfiNYim7VfapdUtXN1j+JAmigkVWTUCjxLXG7yhYNQrSzvzQTDgy\/UzZK9UxaYy93Nw5vPnFOAj7Vcus1SEhg0d8sS87kXnqxQYyLDDMvDNCX83KIIphKKwCOgH1bQ9FaO9VWKI7UI+ks2A\/8G1r0thPenp+0WDxXMfo372IRK88wXe0SMzIAkjDlzGfyHLvkerAe1Me13oseb2ocytB+qxQRci3Mab4UQcwMu4JBqf73atePRFU7b3wMX8TBa8hveiU4xbv5Rew0N8ikQJH4a\/+XN5ibhJ84g2MzEk7\/aF6uAZcXkQBErTwrhgU+mrq7czquZr74tiO5Smr3yK6WFqKl4uJCVbUSVMJYyflhaIzrZRMn+T9yKb2qHbHjxyR7fVsnuaBmqREhNgJYXjsq0tLmnkXF3L9awP23j07\/S4+jjKnLOpkED\/DHI5awlpZ72Ku5qrVOANIv8hhiPng5AXpLwRLjs9OjO68Ovr9hRoq+8\/I8MGMPnhHwAW+MnPCl25clbG7AijdA5tdta1L9YBKSxarvn7U8AdVDg4Mx8YM2Ff9Jh6\/MCfLh4Y2LdPS0BfJ6j1M3b9z6+VxPUfhwh4NaL46pRG6lABzQx29gGwgbP37le9UjBbP9Esb4iAsS6xMwtUXNQHUWelBQpVI2GVCK4hxhRvbI907VOhlz0PN5SYCO+\/eq6VlgCR5PLVgSJfzd3Tsd2dS9adjlYhRcSySpTCTGKRQZgMVgcTxayCgf4Qgl6WH2J4ythwuYr+tCUttOq6i5IdCtOZn3Vqp0ehXf9yE8CSCYdqjMwxvrUmbtglyWOhhCEboTb\/wAnV06rC6ePLASHd3sv7hLoooLrnI47U15rD+vx7+4ttnG9LtHEGzluyXMjZVZx+TbfPbX2QKOSxOU8c3PG6lPVV4sukAMgMQkkjpY8Nm0\/TeCjM5IBXqcmthfuaYvUf+LJuPm\/5hjNkYNjjMIWKfUKX9tICwp2UmUkijAaIgSo\/MTkWT3iJWXajQAT8KbstYrkiB0E18+k5KzztmlDIBsrSADJjXpCtQHgJj7+Si185AOqSqsQ\/pNKPXDdKBXW9crpkL3vgSoACcNWJUc\/AgvAN6xcyZIxEkBt7OPW1wT55nc650OcL+sPo1mr4Mrwtrvw3sSGTjXBOsGewrzFAaMaxLqKRaTa6ou2KHXWtEuMjYjf4KwprNiF+NqN4ehMfNDXujRLyEsBiDGCXllr+iBO4Sj2ktPgkzhxPnUs6rcHZ7WqR32EacQLtBU2l9oRLY0WkXZfCQ97YvOQao3vtzrTmuKj7B+78PKpIbc5Uro8DV7kkWNCZXWoUMVZWkH7b+UC08bi4WV3VNaixXbP\/KP0Wczo9z\/gQfOLqvnH7AcyaEuB9thnjP8Xp4R8BenWxRH5cp2Ik2+ClHSXNXjw1MoDqSckD7no\/uCJA6BykniTWli2P02Z7rxfON7GwgYdZgXz2W3a7ZK5qEWk7T8qJRo86OEtnmJozcFGS9X3FVwHvcNTg9yMtkspXncgbqXU1Ih9JkGPj\/32Ewg5xVTklxPTSntVJ8u6mTOpo4ak20VXZboK\/t\/wt+tonfJYYa3kWnMEaDqL9BwFOetTQ0MGrioXR+WGPt6z1U7hkj5725M9u8DKqTvyiUHLmRjOufXE5IPwfkWHo57i4i3q4MF2o7ikVuAIay458\/Kl3H5ogMLjIrWc4lq0Z5sM8a4zfLjr45M+jS0uEKa5hof\/EmBQ+N7oleHHD0V21R8CXMXXpHDSNyGSqc+I66GKeCxKRqGmWRVKJ82ru2J+rADkwbAEIcFC7A0rkrMqZrsdfz5t\/C7zqC3hlrA7NVJqk6nfbify9Ql1ai5sy6UpbT8BsmhI+bJ75PjghRv1jokSptLBk68nTdnZi8iVDVHQn\/h1lJobM3trFT5cmK0rafD3y4GzOEtbr6BrpbMRAixdijDmPZURHf5u+dAvuM6vBgZsBWuaoU8\/KKUECUdIJAuF6GANdBH7eZAEQnWgrWvmqNerR\/liEqIptppDAAT+7bA2X6a4OgnCsAVDgc1n3v9uDjv66IMtvLvwog5PAbXJNsK+hnDEvBioJ08eHfSLffYJAQEzxjeS3rcUSpHVViVGyqKawxW6LA0LB0Ru9Oq282XNvl+WeT\/0xMF42BT3NLID7sa\/LHpKzg\/JkZCNiUb3UyPT0FdzQN1G+FNxISFveV1DpMrLLV4WKe0tPjcME\/71dLqc0e5V01SDPusEX7Qm10EOU\/2x4JgElCbg\/KsVNWS5qJUAKwM5QCtI\/BM+6tx3jA4LPmQBCMjbiksM1BQGuHI0wrTCmmaClxZ10eHqTAwIIDIPRNULcM0GbdaIDLkcycjGDTnKXjpws+vVcXDyGFIORgUBd3Q3P9f2S26P7aVNg2KjijXA\/6Pemb3zfRTK4JN+iTguwvBUerBgiZv9OMUk\/7LTp81KLPFJRMRimkAB3JML5JnUPc0V05dT3O9LHiwTfMTQg4WOfHno\/MDakQzfZiivnC7TnPMLjGax0acCjHGQ3a7Bcy3gImfRr3elrfPFijpTwRXMt0oHziLjcipyE5i3LaP9cvjofcSjRvGyAkJHbWtVWKd\/Cz6UjwIKHIDBiIl44JL\/+UOA0e2GqAAXj4VEep4yiXGhUNSxqrJ\/sQA45Ykk1dlW2ml841jV\/m8avL8hl3ui5k5mtwXD\/FBZEpwa6INVGkOqz14ZOzwkyVYabe62I=", "df90d5d52a9c075444e9f57106a2ac05");
+console.log("解密:", decContent);
+
+let encContent = e(decContent, "df90d5d52a9c075444e9f57106a2ac05");
+console.log("加密:", encContent);
+
+if (encContent === originText){
+    console.log("解密成功");
+}else{
+    console.log("解密失败");
+}
